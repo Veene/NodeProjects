@@ -1,0 +1,1 @@
+console.log("hello world!") //used node app.js to run in the terminal

@@ -16,16 +16,20 @@ console.log('command: ', command);
 console.log('yargs.argv', argv)
 
 if(command === 'add') {
-    notes.addNote(argv.title, argv.body);
+    var note = notes.addNote(argv.title, argv.body);
+    notes.logNote(note)
 }
 else if (command === 'list'){
-    notes.getAll();
+    var note = notes.getAll();
+    notes.logNote(note)
 } 
 else if (command === 'read') {
-    notes.readNote(argv.title);
+    var note = notes.readNote(argv.title);
+    notes.logNote(note)
 }
 else if (command === 'remove') {
-    notes.remove(argv.title);
+    var noteRemove = notes.removeNote(argv.title);
+    notes.logNote(noteRemove)
 }
 else {
    console.log('command not recognized'); 

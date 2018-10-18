@@ -2,42 +2,78 @@ console.log('Starting notes.js');
 
 const fs = require('fs');
 
+var fetchNotes = () => {
+    try {
+            var notesString = fs.readFileSync('notes-data.json')
+            return JSON.parse(notesString) 
+        } 
+    catch (e) {
+            return [];
+        }
+};
+
+var saveNotes = (notes) => {
+    fs.writeFileSync('notes-data.json', JSON.stringify(notes))
+};
+
 var addNote = (title, body) => {
-    var notes = [];
+    var notes = fetchNotes();
     var note = {
         title: title,
         body: body,
     };
-    try {
-        var notesString = fs.readFileSync('notes-data.json')
-        notes = JSON.parse(notesString) 
-    } catch (e) {
-        //nothing will happen if the try fails, just continues to push note
-    }
-    //filter is checking if the new added title is equal to any of the notes titles in the array extracted from notes.data.json
-    //if yes, filter will grab that one and put it into duplicateNotes array, so if no duplicates, then it will be empty
     var duplicateNotes = notes.filter(note => note.title === title);
 
     if(duplicateNotes.length === 0) {
-        notes.push(note)
-        fs.writeFileSync('notes-data.json', JSON.stringify(notes))
+        notes.push(note);
+        saveNotes(notes);
+        return note;
+        
     } else {
-        console.log('not added because duplicate title')
+        console.log("Duplicate")
     }
 };
 var getAll = () => {
     console.log('Getting all notes');
 }
 var readNote = (title) => {
-    console.log('Reading note:', title);
+    var notes = fetchNotes();
+    var note = notes.filter(note => note.title === title)
+    if (note.length !== 0) return note[0]
+    if (note.length === 0) false
 }
-var remove = (title) => {
-    console.log('removing note', title);
+var removeNote = (title) => {
+    // console.log('removing note', title);
+    //fetch notes
+    var notes = fetchNotes(); //fetchnotes already parses the file
+    //filter out the notes
+    var newNotes = notes.filter(note => note.title !== title)
+    var removedNote = notes.filter(note => note.title === title)
+    if(removedNote.length === 0){
+        console.log('removed note does not exist')
+        return false
+    } else {
+        saveNotes(newNotes);
+        console.log('removed note')
+        return true
+    }
+    //writing over file with the new array -> stringify
+}
+var logNote = (note) => {
+    if(note) {
+        console.log('--')
+        console.log(`Title: ${note.title}`)
+        console.log(`Body: ${note.body}`)
+    } else {
+        console.log('--')
+        console.log('note not found')
+    }
 }
 
 module.exports = {
     addNote: addNote,
     getAll: getAll,
     readNote: readNote,
-    remove: remove,
+    removeNote: removeNote,
+    logNote: logNote,
 }

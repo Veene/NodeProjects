@@ -23,8 +23,15 @@ request({
     url: url,
     json: true
 }, (error, response, body) => {
+    if(error) {
+        console.log('unable to connect to servers properly')
+    } else if (body.info.statuscode === 400) {
+        console.log('unable to find that adress')
+    } else if (body.info.statuscode === 0) {
+        console.log("Address: ", body.results[0].locations[0].street, body.results[0].locations[0].adminArea5, body.results[0].locations[0].adminArea1)
+        console.log("latitude: ", body.results[0].locations[0].latLng.lat)
+        console.log("longitude: ", body.results[0].locations[0].latLng.lng)
+    }
     // console.log(JSON.stringify(body, undefined, 0))
-    console.log("Address: ", body.results[0].locations[0].street, body.results[0].locations[0].adminArea5, body.results[0].locations[0].adminArea1)
-    console.log("latitude: ", body.results[0].locations[0].latLng.lat)
-    console.log("longitude: ", body.results[0].locations[0].latLng.lng)
+    
 })

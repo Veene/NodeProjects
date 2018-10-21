@@ -29,6 +29,9 @@ axios.get(Mapurl).then((res) => {
     const weatherUrl = `https://api.darksky.net/forecast/${weatherKey}/${latitude},${longitude}`;
     return axios.get(weatherUrl)
     }).then((res) => {
+        if(res.data.info.statuscode !== 0){
+            throw new Error('An error has occured with the request')
+        }
         console.log(res.data.currently.temperature, res.data.currently.apparentTemperature)
     }).catch((error) => {
         console.log(error)

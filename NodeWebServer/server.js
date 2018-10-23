@@ -2,6 +2,7 @@ const express = require('express');
 const hbs = require('hbs');
 const fs = require('fs');
 
+const port = process.env.PORT || 3000;
 var app = express(); 
 
 hbs.registerPartials(__dirname + '/views/partials')
@@ -36,18 +37,8 @@ hbs.registerHelper('screamIt', (text) => {
 })
 
 //request, response is EXPRESS specific!!!!
-app.get('/', (req, res) => {
-    // res.send('<h1>hello express!</h1>')
-    res.send({
-        name: 'John', 
-        likes: [
-            'Biking',
-            'Coding'
-        ]
-    })
-});
 
-app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
     res.render('home.hbs', {
         pageTitle: 'Home Page',
         welcomeMessage: 'This is the home page!'
@@ -60,11 +51,17 @@ app.get('/about', (req, res) => {
     })
 })
 
+app.get('/projects', (req, res) => {
+    res.render('projects.hbs', {
+        pageTitle: 'Projects'
+    })
+})
+
 app.get('/bad', (req, res) => {
     res.send({
         errorMessage: "unable to handle request"
     })
 })
-app.listen(3000, () =>{
-    console.log('server starting up on port 3000')
+app.listen(port, () => {
+    console.log(`server starting up on port ${port}`)
 });

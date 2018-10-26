@@ -8,17 +8,12 @@ MongoClient.connect(uriString, (err, db) => {
       return console.log('unable to connect to mongodb server')
     } 
     console.log('connected to MongoDB!')
-  
-    db.collection('Users').insertOne({
-      name:'John',
-      age: 29,
-      location: 'Toronto'
-    }, (err, result) => {
-      if(err) {
-        return console.log('collection error', err)
-      }
-      console.log(JSON.stringify(result.ops[0]._id.getTimestamp()))
+    
+    db.collection('Users').find().toArray().then((docs) => {
+        console.log(`Todos count: ${JSON.stringify(docs)}`);
+    }, (err) => {
+        console.log('unable to fetch todos', err)
     })
 
-    db.close();
+    // db.close();
 });

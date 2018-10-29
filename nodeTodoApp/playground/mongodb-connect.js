@@ -9,16 +9,16 @@ MongoClient.connect(uriString, (err, db) => {
     } 
     console.log('connected to MongoDB!')
   
-    db.collection('Users').insertOne({
-      name:'John',
-      age: 29,
-      location: 'Toronto'
-    }, (err, result) => {
-      if(err) {
-        return console.log('collection error', err)
-      }
-      console.log(JSON.stringify(result.ops[0]._id.getTimestamp()))
-    })
+    // db.collection('Users').insertOne({
+    //   name:'John',
+    //   age: 29,
+    //   location: 'Toronto'
+    // }, (err, result) => {
+    //   if(err) {
+    //     return console.log('collection error', err)
+    //   }
+    //   console.log(JSON.stringify(result.ops[0]._id.getTimestamp()))
+    // })
 
     db.close();
 });

@@ -22,9 +22,9 @@ MongoClient.connect(uriString, (err, db) => {
     // db.collection('Todos').findOneAndDelete({completed: false}).then(result => {
     //     console.log(JSON.stringify(result))
     // })
-    db.collection('Users').deleteMany({location: 'Toronto'}).then(result => {
-        console.log(JSON.stringify(result))
-    })
+    // db.collection('Users').deleteMany({location: 'Toronto'}).then(result => {
+    //     console.log(JSON.stringify(result))
+    // })
 
     // db.close();
 });

@@ -7,6 +7,7 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
 var app = express();
+const port = process.env.PORT || 3000;
 
 //app.use takes middleware
 app.use(bodyParser.json());
@@ -34,14 +35,14 @@ app.get('/todos/:id', (req, res) => {
     if(!ObjectID.isValid(id)){
         res.status(404).send()
     }
-    User.findById(id).then((todo) => {
+    Todo.findById(id).then((todo) => {
         console.log('todo: ', todo)
         res.send(todo)
     }).catch((e) => res.status(400).send())
 })
 
-app.listen(3000, () => {
-    console.log('server started up on Port 3000')
+app.listen(port, () => {
+    console.log('server started up on Port: ', port)
 })
 // var newUser = new User({
 //     username: 'John',

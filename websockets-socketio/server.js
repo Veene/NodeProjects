@@ -20,3 +20,15 @@ app.get('/', function(request, response) {
 server.listen(5000, function() {
   console.log('Starting server on port 5000');
 });
+
+io.on('connection', (socket) => {
+    console.log('connected user: ')
+
+    socket.on('disconnect', () => {
+        console.log('disconnected user')
+    })
+})
+
+setInterval(() => {
+    io.sockets.emit('message', 'hi!');
+}, 1000);

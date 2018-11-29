@@ -17,7 +17,7 @@
     "socket.io": "^2.1.0"
   },
   "scripts": {
-    "start": "webpack -w & nodemon server/app.js --ignore public"
+    "start": "webpack -w & nodemon server/app.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

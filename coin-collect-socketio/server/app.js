@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
 	res.status(err.status || 500);
-	res.send(err.message || 'Internal server error');
+	res.send(err.message || 'Internal server error!');
 });
 
 io.on('connection', (socket) => {

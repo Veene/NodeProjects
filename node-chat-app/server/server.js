@@ -7,15 +7,6 @@ var app = express();
 
 app.use(express.static(publicPath))
 
-// app.get('/', (req, res) => {
-//     res.send()
-// })
-
-
-
-// console.log(__dirname + '/../public');
-// console.log(publicPath);
-
 app.listen(port, () => {
     console.log(`server on port ${port}`)
 })

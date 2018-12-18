@@ -6,10 +6,20 @@ const axios = require('axios')
 // from will be 3 character currency as will to
 
 const getExchangeRate = async (from, to) => {
-    const response = await axios.get('http://data.fixer.io/api/latest?access_key=e3b92fbcdf2fab98d4e4314a6c8a07a2&format=1')
-    const euro = 1 / response.data.rates[from];
-    const rate = euro * response.data.rates[to];
-    return rate;
+    try {
+        const response = await axios.get('http://data.fixer.io/api/latest?access_key=e3b92fbcdf2fab98d4e4314a6c8a07a2&format=1')
+        const euro = 1 / response.data.rates[from];
+        const rate = euro * response.data.rates[to];
+
+        if(isNaN(rate)) {
+            throw new Error()
+        }
+
+        return rate;
+    } catch (error) {
+        throw new Error('unable to get exchange rate')
+    }
+    
     
     // return axios.get('http://data.fixer.io/api/latest?access_key=e3b92fbcdf2fab98d4e4314a6c8a07a2&format=1')
     // .then((response) => {
@@ -28,18 +38,25 @@ const getCountries = async (currencyCode) => {
     //     return response.data.map((country) => country.name)
     // }))
 }
-getExchangeRate('USD', 'CAD').then((rate) => {
-    console.log(rate)
-})
-getCountries('CAD').then((countries) => {
-    console.log(countries)
-})
-const getConversionAndCountries = (from, to) => {
-    const rate = getExchangeRate(from, to)
-    let value = rate * 20
-    const countries = getCountries(to)
-    console.log(`20 ${from} is worth ${value} ${to}. You can spend these in the following countries: ${countries}`) 
+const convertCurrency = async (from, to, amount) => {
+    const rate = await getExchangeRate(from, to)
+    const countries = await getCountries(to)
+    const convertedAmount = (amount * rate).toFixed(2)
+    return `${amount} ${from} is worth ${convertedAmount} ${to} .you can spend it in: ${countries.join(', ')}`;
 }
 
-getConversionAndCountries('usd', 'cad');
+// const convertCurrency = async (from, to, amount) => {
+//     let convertedAmount;
+//     return getExchangeRate(from, to).then((rate) => {
+//         convertedAmount = (amount * rate).toFixed(2)
+//         return getCountries(to)
+//     }).then((countries) => {
+//         return `${amount} ${from} is worth ${convertedAmount} ${to} .you can spend it in: ${countries.join(', ')}`;
+//     })
+// }
+// getConversionAndCountries('usd', 'cad');
+convertCurrency('USD', 'CAD', 20).then((message) => console.log(message))
+.catch((e) => console.log(e))
+
+
 //20 USD is worth 26 CAD (guess). You can spend these in the following countries: [list countries]

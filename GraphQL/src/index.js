@@ -6,5 +6,5 @@ console.log(name)
 console.log(myCurrentLocation)
 console.log(getGreeting('John'))
 console.log(add(2,5))
-console.log(minusBitch(5,4))
+console.log(minusBitch(5,4)))
 

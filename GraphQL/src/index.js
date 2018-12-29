@@ -4,7 +4,7 @@ import uuidv4 from 'uuid/v4';
 //THE FIVE SCALAR TYPES - String, Boolean, Int, Float, ID
 
 //Demo user data
-const users = [{
+let users = [{
     id: '1',
     name: 'Andrew',
     email: 'andrew@example.com',
@@ -21,7 +21,7 @@ const users = [{
     age: 27
 }];
 //demo posts data
-const posts = [{
+let posts = [{
     id: '1',
     title: 'Test title 1',
     body: 'Test body 1',
@@ -41,7 +41,7 @@ const posts = [{
     author: '2'
 },]
 //demo comments array
-const comments = [{
+let comments = [{
     id:'1',
     text:'thats great1',
     author: '1',
@@ -74,9 +74,27 @@ const typeDefs = `
     }
 
     type Mutation {
-        createUser(name: String!, email: String!, age: Int): User!
-        createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
-        createComment(text: String!, author: ID!, post: ID!): Comment!
+        createUser(data: CreateUserInput): User!
+        deleteUser(id: ID!): User!
+        createPost(data: CreatePostInput): Post!
+        createComment(data: CreateCommentInput): Comment!
+    }
+
+    input CreateUserInput {
+        name: String!
+        email: String!
+        age: Int
+    }
+    input CreatePostInput {
+        title: String!
+        body: String!
+        published: Boolean!
+        author: ID!
+    }
+    input CreateCommentInput {
+        text: String!
+        author: ID!
+        post: ID!
     }
 
     type User {
@@ -145,54 +163,71 @@ const resolvers = {
     },
     Mutation: {
         createUser(parent,args,ctx,info) {
-            const emailTaken = users.some((user) => user.email === args.email)
+            const emailTaken = users.some((user) => user.email === args.data.email)
             if(emailTaken) {
                 throw new Error('email is already in use')
             }
+            const one = {
+                name:'Philadelphia'
+            }
+            const two = {
+                population: 1500000,
+                ...one
+            }
             const user = {
                 id: uuidv4(),
-                name: args.name,
-                email: args.email,
-                age: args.age
+                ...args.data
             }
             users.push(user)
             return user
             // console.log(args)
         },
+        deleteUser(parent, args, ctx, info) {
+            const userIndex = users.findIndex((user) => user.id === args.id)
+            if(userIndex === -1) {
+                throw new Error('User not Found')
+            }
+            const deletedUsers = users.splice(userIndex, 1)
+            posts = posts.filter((post) => {
+                const match = post.author === args.id
+                //if match means post by that author needs to be deleted, so all comments on that post need to be deleted too
+                if(match) {
+                    comments = comments.filter((comment) => comment.post !== post.id)
+                }
+                return post.author !== args.id //return !match
+            })
+            comments = comments.filter((comment) => comment.author !== args.id)
+            return deletedUsers[0]
+        },
         createPost(parent, args, ctx, info) {
-            const userExists = users.some((user) => user.id === args.author)
+            const userExists = users.some((user) => user.id === args.data.author)
             if(!userExists) {
                 throw new Error('user not found')
             }
             const post = {
                 id: uuidv4(),
-                title: args.title,
-                body: args.body,
-                published: args.published,
-                author: args.author
+                ...args.data
             }
             posts.push(post)
             return post
         },
         createComment(parent, args, ctx, info) {
-            const postExists = posts.some((post) => post.id === args.post)
+            const postExists = posts.some((post) => post.id === args.data.post)
             if(!postExists){
                 throw new Error('post not found')
             }
-            const postPublished = posts.filter((post) => post.id === args.post)[0].published
+            const postPublished = posts.filter((post) => post.id === args.data.post)[0].published
             console.log(postPublished)
             if(!postPublished){
                 throw new Error('post not published')
             }
-            const userExists = users.some((user) => user.id === args.author)
+            const userExists = users.some((user) => user.id === args.data.author)
             if(!userExists) {
                 throw new Error('user not found')
             }
             const comment = {
                 id: uuidv4(),
-                text: args.text,
-                post: args.post,
-                author: args.author
+                ...args.data
             }
             comments.push(comment)
             return comment

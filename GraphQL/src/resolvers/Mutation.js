@@ -99,7 +99,7 @@ const Mutation = {
         }
         return post
     },
-    createComment(parent, args, { db }, info) {
+    createComment(parent, args, { db, pubsub }, info) {
         const postExists = db.posts.some((post) => post.id === args.data.post)
         if(!postExists){
             throw new Error('post not found')
@@ -118,6 +118,7 @@ const Mutation = {
             ...args.data
         }
         db.comments.push(comment)
+        pubsub.publish(`comment ${args.data.post}`, { comment: comment})
         return comment
     },
     updateComment(parent, args, {db} , info) {

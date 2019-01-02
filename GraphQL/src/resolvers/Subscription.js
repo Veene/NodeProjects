@@ -22,6 +22,11 @@ const Subscription = {
 
             return pubsub.asyncIterator(`comment ${postId}`) //channel would be called comment 23
         }
+    },
+    post: {
+        subscribe(parent, args, ctx, info) {
+            return ctx.pubsub.asyncIterator('posts') //channel is posts because we are just keeping track of any post being created
+        }
     }
 }
 export { Subscription as default }

@@ -71,23 +71,40 @@ const Mutation = {
         }
         db.posts.push(post)
         if(post.published === true) {
-            pubsub.publish('posts', { post: post })
+            pubsub.publish('posts', {
+                post: {
+                    mutation: 'CREATED',
+                    data: post
+                }
+            })
         }
         return post
     },
-    deletePost(parent, args, { db }, info) {
+    deletePost(parent, args, { db, pubsub }, info) {
         const postIndex = db.posts.findIndex((post) => post.id === args.id)
         if(postIndex === -1) {
             throw new Error('Post not found')
         }
-        let deletedPost = db.posts.splice(postIndex, 1) 
+        //destructure instead of using deletedPost[0]
+        let [deletedPost] = db.posts.splice(postIndex, 1) 
         //remember to delete all comments from that post
         db.comments = db.comments.filter((comment) => comment.post !== args.id)
-        return deletedPost[0]
+
+        if(deletedPost.published) {
+            pubsub.publish('posts', {
+                post: {
+                    mutation: 'DELETED',
+                    data: deletedPost
+                }
+            })
+        }
+
+        return deletedPost
     },
     updatePost(parent, args, {db}, info) {
         const { id, data } = args
         const post = db.posts.find((post) => post.id === id)
+        const originalPost = { ...post } //after this there are if checks to see if post attrs will be updated
         if(!post) {
             throw new Error('post not found')
         }
@@ -99,6 +116,16 @@ const Mutation = {
         }
         if(typeof data.published === 'boolean') {
             post.published = data.published
+
+            if(originalPost.published && !post.published) {
+                //deleted
+
+            } else if(!originalPost.published && post.published) {
+                //created
+
+            }
+        } else if(post.published) {
+            //updated
         }
         return post
     },

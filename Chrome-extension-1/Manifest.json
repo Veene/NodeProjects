@@ -2,5 +2,21 @@
   "manifest_version": 2,
   "name": "John Pawlak has an App",
   "description": "Press Alt+R to reload any given URL.",
-  "version": "1.1"
+  "version": "1.1",
+  "permissions": [
+    "storage",
+    "tabs",
+    "declarativeContent"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "page_action": {
+    "default_popup": "popup.html",
+    "default_icon": "/images/get_started16.png",
+    "default_title": "Click to reload url"
+  }
 }

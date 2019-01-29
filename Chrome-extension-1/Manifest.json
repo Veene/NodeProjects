@@ -6,7 +6,8 @@
   "permissions": [
     "storage",
     "tabs",
-    "declarativeContent"
+    "declarativeContent",
+    "activeTab"
   ],
   "background": {
     "scripts": [
@@ -18,5 +19,6 @@
     "default_popup": "popup.html",
     "default_icon": "/images/get_started16.png",
     "default_title": "Click to reload url"
-  }
+  },
+  "options_page": "options.html"
 }

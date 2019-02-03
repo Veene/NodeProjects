@@ -12,5 +12,9 @@
     "gulp": "^4.0.0",
     "gulp-pump": "0.0.2",
     "gulp-uglify": "^3.0.1"
+  },
+  "dependencies": {
+    "gulp-livereload": "^4.0.1",
+    "static-server": "^2.2.1"
   }
 }
